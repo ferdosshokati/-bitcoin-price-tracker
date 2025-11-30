@@ -23,5 +23,6 @@ pip install pyqt5 matplotlib requests
 - Matplotlib
 - Requests
 - CoinGecko API
-![main-window.PNG](assets/main_window.PNG)
+  
+![main-window.PNG](assets/main-window.PNG)
 
