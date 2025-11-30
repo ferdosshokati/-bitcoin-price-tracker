@@ -1,9 +1,9 @@
 import sys,requests,os
-from PyQt5.QtGui import QPixmap
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow,QApplication,QLabel,QWidget,QPushButton
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+import datetime
 from PyQt5.QtWidgets import QVBoxLayout
 from requests import HTTPError
 
@@ -24,17 +24,14 @@ class UI(QMainWindow):
         self.pushButton_price.clicked.connect(self.update_price)
         self.pushButton_chart.clicked.connect(self.update_chart)
         self.show()
-
+        self.label.setText('bitcoin price')
     def update_price(self):
             data = requests.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd").json()
             price = data["bitcoin"]["usd"]
             self.label_price.setText(f" قیمت بیتکوین{price}$")
             try:
                 response = requests.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd")
-                response.raise_for_status()  # این خط باعث میشه خطاهای HTTP به صورت Exception بیاد
-                data = response.json()
-                price = data["bitcoin"]["usd"]
-                self.label_price.setText(f"قیمت بیتکوین: {price}$")
+                response.raise_for_status()
 
             except requests.exceptions.HTTPError as http_error:
                 match response.status_code:
@@ -76,11 +73,6 @@ class UI(QMainWindow):
             for i in reversed(range(self.chart.layout().count())):
                 self.chart.layout().itemAt(i).widget().setParent(None)
 
-        from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-        from matplotlib.figure import Figure
-        import datetime, requests
-        from PyQt5.QtWidgets import QVBoxLayout
-
         url = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart"
         params = {"vs_currency": "usd", "days": "90"}
         data = requests.get(url, params=params).json()
@@ -100,7 +92,7 @@ class UI(QMainWindow):
         layout = QVBoxLayout(self.chart)
         layout.addWidget(canvas)
         self.chart.setLayout(layout)
-        print(self.label_price)
+        # print(self.label_price)
 
     def display_error(self,message):
         self.label.setStyleSheet("font-size : 30px")
